@@ -7,8 +7,8 @@ from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy
 from werkzeug.security import generate_password_hash
 
-# from website.static_loader import download_static_files
-# download_static_files()
+from website.static_loader import download_static_files
+download_static_files()
 
 db:sqlalchemy = SQLAlchemy()
 DB_NAME  = 'database.db'
