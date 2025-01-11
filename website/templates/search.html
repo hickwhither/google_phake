@@ -1,0 +1,80 @@
+{%extends "base.html"%}
+
+{%block title%}{{query}} - Find on Google Phake{%endblock%}
+
+{%block body%}
+
+
+<div class="col card p-3">
+    <div class="d-flex justify-content-between align-items-center mb-4"></div>
+    <form class="d-flex" action="/search" method="get" onsubmit="return this.q.value.replace(/\s+/g, '').trim().length>0;">
+        <a href="/"><img src="/static/hehe.png" alt="Logo" style="height: 49px; width: auto; object-fit: contain; margin-bottom: 10px;"></a>
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q" value="{{request.args.get('q', '')}}">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    
+    <div class="result-item mt-3">
+    {%if results and total_pages > 0%}
+    {%for result in results%}
+    <div>
+        <a href="{{ result.url }}" target="_blank">
+            <img src="{{ result.icon }}" alt="Icon" style="height: 16px; width: 16px; object-fit: contain; margin-right: 5px;">
+            <strong>{{ result.title }}</strong>
+        </a>
+        <small style="font-size: 0.8em; display: none;" id="rate">rate: {{ result.rate }}</small>
+        <p><small style="color: #6c757d;">{{ float_to_date(result.last_crawl) }} - </small>{{ result.description }}</p>
+    </div>
+
+    {%endfor%}
+    {%else%}
+    No result found
+    {%endif%}
+    </div>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if page > 1 %}
+            <li class="page-item">
+                <a class="page-link" href="?q={{ query }}&p={{ page - 1 }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            {% for p in range(1, total_pages + 1) %}
+            <li class="page-item {% if p == page %}active{% endif %}">
+                <a class="page-link" href="?q={{ query }}&p={{ p }}">{{ p }}</a>
+            </li>
+            {% endfor %}
+            {% if page < total_pages %}
+            <li class="page-item">
+                <a class="page-link" href="?q={{ query }}&p={{ page + 1 }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rateElements = document.querySelectorAll('#rate');
+    const displayRate = localStorage.getItem('displayRate') === 'true';
+
+    rateElements.forEach(function(element) {
+        element.style.display = displayRate ? 'inline' : 'none';
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === '`' || event.key === '~') {
+            const newDisplay = rateElements[0].style.display === 'none' ? 'inline' : 'none';
+            rateElements.forEach(function(element) {
+                element.style.display = newDisplay;
+            });
+            localStorage.setItem('displayRate', newDisplay === 'inline');
+        }
+    });
+});
+</script>
+
+{%endblock%}

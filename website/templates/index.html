@@ -1,0 +1,16 @@
+{%extends "base.html"%}
+
+{%block body%}
+
+
+<div class="col card p-3">
+    <div class="d-flex justify-content-between align-items-center mb-4"></div>
+        <img src="/static/hehe.png" alt="Logo" style="height: 200px; width: auto; object-fit: contain; margin-bottom: 10px;">
+        <form class="d-flex" action="/search" method="get">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+</div>
+
+{%endblock%}
